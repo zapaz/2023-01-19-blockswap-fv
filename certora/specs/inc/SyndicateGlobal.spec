@@ -2,13 +2,13 @@ using MocksETH as sETHToken
 
 methods {
     //// Regular methods
-    totalETHReceived()                                                      returns (uint256) envfree
-    isKnotRegistered(bytes32)                                               returns (bool)    envfree
+    totalETHReceived()                                                      returns (uint256)   envfree
+    isKnotRegistered(bytes32)                                               returns (bool)      envfree
     stake(bytes32[],uint256[],address)
     unstake(address,address,bytes32[],uint256[])
-    accumulatedETHPerFreeFloatingShare()                                    returns (uint256) envfree
-    accumulatedETHPerCollateralizedSlotPerKnot()                            returns (uint256) envfree
-    totalClaimed()                                                          returns (uint256) envfree
+    accumulatedETHPerFreeFloatingShare()                                    returns (uint256)   envfree
+    accumulatedETHPerCollateralizedSlotPerKnot()                            returns (uint256)   envfree
+    totalClaimed()                                                          returns (uint256)   envfree
 
     //// Resolving external calls
 	// stakeHouseUniverse
@@ -23,15 +23,15 @@ methods {
 	getCollateralisedOwnerAtIndex(bytes32, uint256)                         returns (address)                                       => DISPATCHER(true)
 	totalUserCollateralisedSLOTBalanceForKnot(address, address, bytes32)    returns (uint256)                                       => DISPATCHER(true)
     // sETH
-    sETHToken.balanceOf(address)                                            returns (uint256) envfree
-    sETHToken.totalSupply()                                                 returns (uint256) envfree
+    sETHToken.balanceOf(address)                                            returns (uint256)   envfree
+    sETHToken.totalSupply()                                                 returns (uint256)   envfree
 
     // ERC20
     name()                                                                  returns (string)                                        => DISPATCHER(true)
     symbol()                                                                returns (string)                                        => DISPATCHER(true)
-    decimals()                                                              returns (string)                                        => DISPATCHER(true)
+    decimals()                                                              returns (string)    envfree                              => DISPATCHER(true)
     totalSupply()                                                           returns (uint256)                                       => DISPATCHER(true)
-    balanceOf(address)                                                      returns (uint256)                                       => DISPATCHER(true)
+    balanceOf(address)                                                      returns (uint256)   envfree                              => DISPATCHER(true)
     allowance(address,address)                                              returns (uint)                                          => DISPATCHER(true)
     approve(address,uint256)                                                returns (bool)                                          => DISPATCHER(true)
     transfer     (address,uint256)                                          returns (bool)                                          => DISPATCHER(true)
@@ -39,11 +39,11 @@ methods {
 
     //// Harnessing
     // harnessed variables
-    accruedEarningPerCollateralizedSlotOwnerOfKnot(bytes32,address)         returns (uint256) envfree
-    totalETHProcessedPerCollateralizedKnot(bytes32)                         returns (uint256) envfree
-    sETHStakedBalanceForKnot(bytes32,address)                               returns (uint256) envfree
-    sETHTotalStakeForKnot(bytes32)                                          returns (uint256) envfree
-    sETHUserClaimForKnot(bytes32,address)                                   returns (uint256) envfree
+    accruedEarningPerCollateralizedSlotOwnerOfKnot(bytes32,address)         returns (uint256)   envfree
+    totalETHProcessedPerCollateralizedKnot(bytes32)                         returns (uint256)   envfree
+    sETHStakedBalanceForKnot(bytes32,address)                               returns (uint256)   envfree
+    sETHTotalStakeForKnot(bytes32)                                          returns (uint256)   envfree
+    sETHUserClaimForKnot(bytes32,address)                                   returns (uint256)   envfree
 
     // harnessed functions
     deRegisterKnots(bytes32)

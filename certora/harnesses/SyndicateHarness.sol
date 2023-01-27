@@ -3,17 +3,12 @@ pragma solidity 0.8.13;
 // SPDX-License-Identifier: MIT
 
 import "../munged/syndicate/Syndicate.sol";
-import { ISlotSettlementRegistry } from "../munged/interfaces/ISlotSettlementRegistry.sol";
-import { IStakeHouseUniverse } from "../munged/interfaces/IStakeHouseUniverse.sol";
+import {ISlotSettlementRegistry} from "../munged/interfaces/ISlotSettlementRegistry.sol";
+import {IStakeHouseUniverse} from "../munged/interfaces/IStakeHouseUniverse.sol";
 
 contract SyndicateHarness is Syndicate {
     address registry;
     address universe;
-
-
-    function isActive(blsKey input) public view returns (bool active) {
-      (,,,,, active) = getStakeHouseUniverse().stakeHouseKnotInfo(blsKey.unwrap(input));
-    }
 
     function registerKnotsToSyndicate(blsKey input) public {
         blsKey[] memory next_input = new blsKey[](1);
@@ -80,7 +75,9 @@ contract SyndicateHarness is Syndicate {
         unstake(input1, input2, next_input3, next_input4);
     }
 
-    function unstake(address input1, address input2, blsKey input3, blsKey input4, uint256 input5, uint256 input6) public {
+    function unstake(address input1, address input2, blsKey input3, blsKey input4, uint256 input5, uint256 input6)
+        public
+    {
         blsKey[] memory next_input3 = new blsKey[](2);
         next_input3[0] = input3;
         next_input3[1] = input4;

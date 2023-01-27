@@ -6,7 +6,7 @@ import { ERC20PermitUpgradeable } from "@openzeppelin/contracts-upgradeable/toke
 import { ISlotSettlementRegistry } from "../munged/interfaces/ISlotSettlementRegistry.sol";
 import { ScaledMath } from "../munged/libraries/ScaledMath.sol";
 
-contract  MocksETH is ERC20PermitUpgradeable {
+contract  MocksETH2 is ERC20PermitUpgradeable {
     using ScaledMath for uint256;
 
     /// @notice Address of registry of all SLOT tokens
@@ -89,7 +89,7 @@ contract  MocksETH is ERC20PermitUpgradeable {
     function transfer(address recipient, uint256 amount) public virtual override returns (bool val) {
         if (balanceOf(recipient) >= amount) {
             return super.transfer(recipient, amount);
-        }         
+        }
     }
 
     function transferFrom(
@@ -100,6 +100,6 @@ contract  MocksETH is ERC20PermitUpgradeable {
         if (balanceOf(sender) >= amount) {
             super.transferFrom(sender, recipient, amount);
             return true;
-        }         
+        }
     }
 }

@@ -5,3 +5,6 @@ node_modules/
 artifacts/
 cache/
 resource_errors.json
+.zip-output-url.txt
+*.zip
+out
