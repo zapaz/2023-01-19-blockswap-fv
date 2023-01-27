@@ -10,6 +10,11 @@ contract SyndicateHarness is Syndicate {
     address registry;
     address universe;
 
+
+    function isActive(blsKey input) public view returns (bool active) {
+      (,,,,, active) = getStakeHouseUniverse().stakeHouseKnotInfo(blsKey.unwrap(input));
+    }
+
     function registerKnotsToSyndicate(blsKey input) public {
         blsKey[] memory next_input = new blsKey[](1);
         next_input[0] = input;
@@ -133,4 +138,3 @@ contract SyndicateHarness is Syndicate {
         return IStakeHouseUniverse(universe);
     }
 }
-
