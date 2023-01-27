@@ -35,9 +35,7 @@ invariant sETHSolvencyCorrollaryInvariant(address user, address random, bytes32 
 /**
 * On stake, sETH transfered from user to contract
 */
-rule onStake() filtered {
-    f -> notHarnessCall(f)
-}{
+rule onStake() {
     env e; bytes32 key; uint256 amount; address behalf;
 
     address staker  = e.msg.sender;
