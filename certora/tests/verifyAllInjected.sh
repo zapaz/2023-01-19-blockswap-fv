@@ -8,7 +8,7 @@ do
     for script in certora/scripts/*.sh
     do
         echo "Running $script"
-        sh $script
+        sh $script $script $f
     done
     echo "Reverting $f"
     git apply -R $f

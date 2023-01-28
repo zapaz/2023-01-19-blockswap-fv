@@ -1,15 +1,5 @@
 import "inc/SyndicateGlobal.spec"
 
-methods {
-    sETHBalanceOf                               (bytes32, address)  returns (uint256)   envfree
-    sETHTotalSupply                             (bytes32)           returns (uint256)   envfree
-
-    lastSeenETHPerCollateralizedSlotPerKnot     ()                  returns (uint256)   envfree
-    lastSeenETHPerFreeFloating                  ()                  returns (uint256)   envfree
-    totalFreeFloatingShares                     ()                  returns (uint256)   envfree
-    getUnprocessedETHForAllCollateralizedSlot   ()                  returns (uint256)   envfree
-}
-
 /**
  * Address 0 must have zero balance for any StakeHouse sETH
  */
@@ -75,7 +65,7 @@ rule unstakeRule() {
 }
 
 /**
-* Minimum rule derived from unstakeRule to discover bug1
+* Minimum rule derived from unstakeRule to detect bug1
 */
 rule bug1Rule() {
     env e; bytes32 key; uint256 amount;
@@ -89,6 +79,22 @@ rule bug1Rule() {
     mathint sethToBalAfter     = sETHBalanceOf(key, unstaker);
 
     assert sethToBalAfter != sethToBalBefore;
+}
+
+/**
+* Vacuous rule to detect bug5
+*/
+rule bug5Rule(method f) filtered {
+   f -> notHarnessCall(f)
+}{
+    mathint knots        = numberOfRegisteredKnots();
+    mathint last         = lastSeenETHPerCollateralizedSlotPerKnot();
+    mathint totalETH     = totalETHReceived();
+    mathint unprocessed  = getUnprocessedETHForAllCollateralizedSlot();
+
+    require knots       != 0;
+
+    assert unprocessed  ==  ( ( totalETH / 2 ) - last) / knots ;
 }
 
 /**
