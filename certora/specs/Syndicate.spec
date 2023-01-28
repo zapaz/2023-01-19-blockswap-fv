@@ -1,4 +1,10 @@
 import "inc/SyndicateGlobal.spec"
+import "DetectBugs159.spec"
+import "KnotsCount.spec"
+
+use rule bug1Rule
+use rule bug5Rule
+use invariant numberOfRegisteredKnotsInvariant
 
 /**
  * Address 0 must have zero balance for any StakeHouse sETH
@@ -62,39 +68,6 @@ rule unstakeRule() {
 
     assert syndicateBalAfter  == syndicateBalBefore - amount;
     assert sethToBalAfter     == sethToBalBefore    + amount;
-}
-
-/**
-* Minimum rule derived from unstakeRule to detect bug1
-*/
-rule bug1Rule() {
-    env e; bytes32 key; uint256 amount;
-    address ethTo; address unstaker;
-
-    require amount > 0;
-    require unstaker != currentContract;
-
-    mathint sethToBalBefore    = sETHBalanceOf(key, unstaker);
-    unstake(e, ethTo, unstaker, key, amount);
-    mathint sethToBalAfter     = sETHBalanceOf(key, unstaker);
-
-    assert sethToBalAfter != sethToBalBefore;
-}
-
-/**
-* Vacuous rule to detect bug5
-*/
-rule bug5Rule(method f) filtered {
-   f -> notHarnessCall(f)
-}{
-    mathint knots        = numberOfRegisteredKnots();
-    mathint last         = lastSeenETHPerCollateralizedSlotPerKnot();
-    mathint totalETH     = totalETHReceived();
-    mathint unprocessed  = getUnprocessedETHForAllCollateralizedSlot();
-
-    require knots       != 0;
-
-    assert unprocessed  ==  ( ( totalETH / 2 ) - last) / knots ;
 }
 
 /**
