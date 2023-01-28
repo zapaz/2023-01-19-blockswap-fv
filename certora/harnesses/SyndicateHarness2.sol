@@ -5,14 +5,22 @@ import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SyndicateHarness} from "./SyndicateHarness.sol";
 
 contract SyndicateHarness2 is SyndicateHarness {
-    function sETHBalanceOf(blsKey input, address addr) public view returns (uint256) {
-        (address stakeHouse,,,,,) = getStakeHouseUniverse().stakeHouseKnotInfo(blsKey.unwrap(input));
-        IERC20 sETH = IERC20(getSlotRegistry().stakeHouseShareTokens(stakeHouse));
+    mapping(bytes32 => address) sETHTokens;
 
-        return sETH.balanceOf(addr);
+    function getSETH(blsKey key) public view returns (IERC20 sETH) {
+        (address stakeHouse,,,,,) = getStakeHouseUniverse().stakeHouseKnotInfo(blsKey.unwrap(key));
+        sETH = IERC20(getSlotRegistry().stakeHouseShareTokens(stakeHouse));
     }
 
-    function isActive(blsKey input) public view returns (bool active) {
-        (,,,,, active) = getStakeHouseUniverse().stakeHouseKnotInfo(blsKey.unwrap(input));
+    function sETHBalanceOf(blsKey key, address addr) public view returns (uint256) {
+        return getSETH(key).balanceOf(addr);
+    }
+
+    function sETHTotalSupply(blsKey key) public view returns (uint256) {
+        return getSETH(key).totalSupply();
+    }
+
+    function isActive(blsKey key) public view returns (bool active) {
+        (,,,,, active) = getStakeHouseUniverse().stakeHouseKnotInfo(blsKey.unwrap(key));
     }
 }

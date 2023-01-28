@@ -1,22 +1,20 @@
 import "inc/SyndicateGlobal.spec"
 
 methods {
-    isActive        (bytes32)           returns (bool)      envfree
-    sETHBalanceOf   (bytes32, address)  returns (uint256)   envfree
+    sETHBalanceOf                               (bytes32, address)  returns (uint256)   envfree
+    sETHTotalSupply                             (bytes32)           returns (uint256)   envfree
+
+    lastSeenETHPerCollateralizedSlotPerKnot     ()                  returns (uint256)   envfree
+    lastSeenETHPerFreeFloating                  ()                  returns (uint256)   envfree
+    totalFreeFloatingShares                     ()                  returns (uint256)   envfree
+    getUnprocessedETHForAllCollateralizedSlot   ()                  returns (uint256)   envfree
 }
 
 /**
- * Address 0 must have zero sETH balance.
+ * Address 0 must have zero balance for any StakeHouse sETH
  */
-invariant addressZeroHasNoBalance()
-    sETHToken.balanceOf(0) == 0
-    filtered { f -> notHarnessCall(f) }
-
-/**
- * TotalStake is 12 ether max
- */
-invariant maxTotalStake()
-    sETHToken.totalSupply() <= 12000000000000000000
+invariant sETHAddressZeroHasNoBalance(bytes32 key)
+    sETHBalanceOf(key, 0) == 0
     filtered { f -> notHarnessCall(f) }
 
 /**
@@ -60,8 +58,8 @@ rule stakeRule() {
 */
 rule unstakeRule() {
     env e; bytes32 key; uint256 amount;
-    address ethTo;
-    address unstaker;
+    address ethTo; address unstaker;
+
     require unstaker != currentContract;
 
     mathint sethToBalBefore    = sETHBalanceOf(key, unstaker);
@@ -69,17 +67,34 @@ rule unstakeRule() {
 
     unstake(e, ethTo, unstaker, key, amount);
 
-    mathint sethToBalAfter    = sETHBalanceOf(key, unstaker);
-    mathint syndicateBalAfter = sETHBalanceOf(key, currentContract);
+    mathint sethToBalAfter     = sETHBalanceOf(key, unstaker);
+    mathint syndicateBalAfter  = sETHBalanceOf(key, currentContract);
 
-    assert syndicateBalAfter == syndicateBalBefore - amount;
-    assert sethToBalAfter    == sethToBalBefore    + amount;
+    assert syndicateBalAfter  == syndicateBalBefore - amount;
+    assert sethToBalAfter     == sethToBalBefore    + amount;
 }
 
 /**
-* AccumulatedETH or totalClaimed allways increase
+* Minimum rule derived from unstakeRule to discover bug1
 */
-rule alwaysIncrease(method f) filtered {
+rule bug1Rule() {
+    env e; bytes32 key; uint256 amount;
+    address ethTo; address unstaker;
+
+    require amount > 0;
+    require unstaker != currentContract;
+
+    mathint sethToBalBefore    = sETHBalanceOf(key, unstaker);
+    unstake(e, ethTo, unstaker, key, amount);
+    mathint sethToBalAfter     = sETHBalanceOf(key, unstaker);
+
+    assert sethToBalAfter != sethToBalBefore;
+}
+
+/**
+* AccumulatedETH, totalClaimed and totalETHReceived allways increase
+*/
+rule monotonicallyIncreases(method f) filtered {
     f -> notHarnessCall(f)
 }{
     env e; calldataarg args;
@@ -87,22 +102,31 @@ rule alwaysIncrease(method f) filtered {
     mathint amount1Before = accumulatedETHPerFreeFloatingShare();
     mathint amount2Before = accumulatedETHPerCollateralizedSlotPerKnot();
     mathint amount3Before = totalClaimed();
+    mathint amount4Before = totalETHReceived();
+    mathint amount5Before = lastSeenETHPerCollateralizedSlotPerKnot();
+    mathint amount6Before = lastSeenETHPerFreeFloating();
 
     f(e, args);
 
     mathint amount1After  = accumulatedETHPerFreeFloatingShare();
     mathint amount2After  = accumulatedETHPerCollateralizedSlotPerKnot();
     mathint amount3After  = totalClaimed();
+    mathint amount4After  = totalETHReceived();
+    mathint amount5After  = lastSeenETHPerCollateralizedSlotPerKnot();
+    mathint amount6After  = lastSeenETHPerFreeFloating();
 
     assert amount1After  >= amount1Before;
     assert amount2After  >= amount2Before;
     assert amount3After  >= amount3Before;
+    assert amount4After  >= amount4Before;
+    assert amount5After  >= amount5Before;
+    assert amount6After  >= amount6Before;
 }
 
 /**
  * An unregistered knot can not be deregistered.
  */
-rule canNotDegisterUnregisteredKnot(method f) filtered {
+rule canNotDeregisterUnregisteredKnot(method f) filtered {
     f -> notHarnessCall(f)
 } {
     bytes32 knot; env e;
@@ -112,22 +136,3 @@ rule canNotDegisterUnregisteredKnot(method f) filtered {
 
     assert lastReverted, "deRegisterKnots must revert if knot is not registered";
 }
-
-
-/**
- * Total ETH received must not decrease.
- */
-rule totalEthReceivedMonotonicallyIncreases(method f) filtered {
-    f -> notHarnessCall(f)
-}{
-
-    uint256 totalEthReceivedBefore = totalETHReceived();
-
-    env e; calldataarg args;
-    f(e, args);
-
-    uint256 totalEthReceivedAfter = totalETHReceived();
-
-    assert totalEthReceivedAfter >= totalEthReceivedBefore, "total ether received must not decrease";
-}
-

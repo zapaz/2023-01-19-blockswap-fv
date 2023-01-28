@@ -5,7 +5,7 @@ certoraRun  certora/harnesses/SyndicateHarness2.sol               \
     certora/harnesses/MocksETH.sol                                \
     certora/harnesses/MocksETH2.sol                               \
     certora/harnesses/MocksETH3.sol                               \
-    --verify SyndicateHarness2:certora/specs/Syndicate.spec       \
+    --verify SyndicateHarness2:certora/specs/SyndicateIssues.spec \
     --cloud master                                                \
     --optimistic_loop                                             \
     --optimize 1                                                  \
