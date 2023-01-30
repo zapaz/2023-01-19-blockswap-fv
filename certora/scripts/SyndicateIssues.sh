@@ -3,7 +3,6 @@ certoraRun  certora/harnesses/SyndicateHarness.sol               \
     certora/harnesses/MockStakeHouseRegistry.sol                  \
     certora/harnesses/MockSlotSettlementRegistry.sol              \
     certora/harnesses/MocksETH.sol                                \
-    certora/harnesses/MocksETH2.sol                               \
     certora/harnesses/MocksETH3.sol                               \
     --verify SyndicateHarness:certora/specs/SyndicateIssues.spec \
     --cloud master                                                \

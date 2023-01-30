@@ -7,6 +7,10 @@ import {SyndicateHarnessOrig} from "./SyndicateHarnessOrig.sol";
 contract SyndicateHarness is SyndicateHarnessOrig {
     mapping(bytes32 => address) sETHTokens;
 
+    function ethBalance() public view returns (uint256) {
+        return address(this).balance;
+    }
+
     function getSETH(blsKey key) public view returns (IERC20 sETH) {
         (address stakeHouse,,,,,) = getStakeHouseUniverse().stakeHouseKnotInfo(blsKey.unwrap(key));
         sETH = IERC20(getSlotRegistry().stakeHouseShareTokens(stakeHouse));
