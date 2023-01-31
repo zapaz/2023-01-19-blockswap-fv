@@ -15,6 +15,7 @@ use rule     stakingStake
 use rule     stakingUnstake
 
 use invariant knotsSyndicatedCount
+use invariant numberOfRegisteredKnotsInvariant
 use rule     knotsCanNotDeregisterUnregistered
 
 use rule     ethDecreaseWhenClaimedIncrease

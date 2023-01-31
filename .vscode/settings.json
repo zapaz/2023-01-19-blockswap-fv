@@ -1,0 +1,26 @@
+{
+    "editor.tabSize": 4,
+    "favorites.resources": [
+        {
+            "filePath": "certora/munged/syndicate/Syndicate.sol",
+            "group": "Default"
+        },
+        {
+            "filePath": "certora/harnesses/SyndicateHarnessOrig.sol",
+            "group": "Default"
+        },
+        {
+            "filePath": "certora/scripts/dev/test.sh",
+            "group": "Default"
+        },
+        {
+            "filePath": "certora/specs/dev/test.spec",
+            "group": "Default"
+        }
+    ],
+    "prettier.tabWidth": 4,
+    "solidity.compileUsingRemoteVersion": "v0.8.13+commit.abaa5c0e",
+    "workbench.colorTheme": "Jewel Contrast (rainglow)",
+    "workbench.preferredLightColorTheme": "Jewel Contrast (rainglow)",
+    "docwriter.style": "GoDoc"
+}
