@@ -1,5 +1,13 @@
 import "inc/SyndicateGlobal.spec"
 
+// ghostNumberOfRegisteredKnots() <=> uint256 public numberOfRegisteredKnots
+ghost ghostNumberOfRegisteredKnots() returns uint256 {
+    init_state axiom ghostNumberOfRegisteredKnots() == 0;
+}
+hook Sstore numberOfRegisteredKnots uint256 num STORAGE {
+    havoc ghostNumberOfRegisteredKnots assuming ghostNumberOfRegisteredKnots@new() == num;
+}
+
 //  mapping(bytes32 => bool) public isKnotRegistered
 ghost ghostKnotsRegisteredCount() returns uint256 {
     init_state axiom ghostKnotsRegisteredCount() == 0;
@@ -17,6 +25,10 @@ hook Sstore isNoLongerPartOfSyndicate[KEY bytes32 k] bool newState (bool oldStat
     havoc ghostKnotsNotSyndicatedCount assuming ghostKnotsNotSyndicatedCount@new() ==
         ghostKnotsNotSyndicatedCount@old() + ( newState != oldState ? ( newState ? 1 : -1 ) : 0 );
 }
+
+invariant numberOfRegisteredKnotsInvariant()
+    numberOfRegisteredKnots() == ghostNumberOfRegisteredKnots()
+    filtered { f -> notHarnessCall(f) }
 
 invariant knotsSyndicatedCount()
     numberOfRegisteredKnots() == ghostKnotsRegisteredCount() - ghostKnotsNotSyndicatedCount()

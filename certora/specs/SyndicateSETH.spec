@@ -20,6 +20,14 @@ invariant sETHTotalStakeForKnotInvariant()
     ghostSETHTotalStaked() == ghostSETHTotalStaked2()
     filtered { f -> notHarnessCall(f) }
 
+// mapping(bytes32 => mapping(address => uint256)) public sETHUserClaimForKnot
+ghost ghostSETHUserClaimableSum() returns uint256 {
+    init_state axiom ghostSETHUserClaimableSum() == 0;
+}
+hook Sstore sETHUserClaimForKnot[KEY bytes32 k][KEY address a] uint256 newClaimed (uint256 oldClaimed) STORAGE {
+    havoc ghostSETHUserClaimableSum assuming ghostSETHUserClaimableSum@new() == ghostSETHUserClaimableSum@old() + newClaimed - oldClaimed;
+}
+
 /**
  * Address 0 must have zero balance for any StakeHouse sETH
  */
@@ -27,6 +35,16 @@ invariant sETHAddressZeroHasNoBalance(bytes32 key)
     sETHBalanceOf(key, 0) == 0
     filtered { f -> notHarnessCall(f) }
 
+/**
+* Check the amount of all claimable ETH is more that amount already claimed
+*/
+invariant sETHTotalClaimable()
+    ghostSETHUserClaimableSum() >= totalClaimed()
+    filtered { f -> notHarnessCall(f) }
+    { preserved {
+        requireInvariant knotsSyndicatedCount();
+        requireInvariant numberOfRegisteredKnotsInvariant();
+    } }
 
 /**
  * Sum of two balances is allways less than Total :

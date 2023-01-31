@@ -15,6 +15,7 @@ use rule     stakingStake
 use rule     stakingUnstake
 
 use invariant knotsSyndicatedCount
+use invariant numberOfRegisteredKnotsInvariant
 use rule     knotsCanNotDeregisterUnregistered
 
 use rule     ethDecreaseWhenClaimedIncrease
@@ -22,3 +23,4 @@ use rule     ethDecreaseWhenClaimedIncrease
 use invariant sETHTotalStakeForKnotInvariant
 use invariant sETHAddressZeroHasNoBalance
 use invariant sETHSolvencyCorrollary
+use invariant sETHTotalClaimable
