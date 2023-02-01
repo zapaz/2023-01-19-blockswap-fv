@@ -183,8 +183,8 @@ contract Syndicate is ISyndicateInit, Initializable, Ownable, ReentrancyGuard, S
             // Process free floating if there are staked shares
             uint256 freeFloatingUnprocessed;
             if (totalFreeFloatingShares > 0) {
-                freeFloatingUnprocessed = getUnprocessedETHForAllFreeFloatingSlot();
-                accumulatedETHPerFreeFloatingShare += _calculateNewAccumulatedETHPerFreeFloatingShare(freeFloatingUnprocessed);
+                freeFloatingUnprocessed = getUnprocessedETHForAllFreeFloatingSlot();  // == totalEthPerSlotType - lastSeenETHPerFreeFloating
+                accumulatedETHPerFreeFloatingShare += _calculateNewAccumulatedETHPerFreeFloatingShare(freeFloatingUnprocessed); // == accumulatedETHPerFreeFloatingShare + freeFloatingUnprocessed / totalFreeFloatingShares
                 lastSeenETHPerFreeFloating = totalEthPerSlotType;
             }
 

@@ -2,7 +2,7 @@ import "inc/SyndicateGlobal.spec"
 
 
 /**
-* Change of claimed total is equal to ETH increase
+* Increase amount of Total Claimed (when not 0) must be equal to amount of ETH decrease
 */
 rule ethDecreaseWhenClaimedIncrease(method f){
     env e; calldataarg args;
