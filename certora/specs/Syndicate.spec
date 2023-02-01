@@ -23,3 +23,4 @@ use rule     ethDecreaseWhenClaimedIncrease
 use invariant sETHTotalStakeForKnotInvariant
 use invariant sETHAddressZeroHasNoBalance
 use invariant sETHSolvencyCorrollary
+use invariant sETHTotalClaimable
