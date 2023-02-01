@@ -21,9 +21,7 @@ rule bug1Rule() {
 /**
 * Vacuous rule to detect bug5
 */
-rule bug5Rule(method f) filtered {
-   f -> notHarnessCall(f)
-}{
+rule bug5Rule() {
     mathint knots  = numberOfRegisteredKnots();
     require knots != 0;
 
