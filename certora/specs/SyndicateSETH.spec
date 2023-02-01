@@ -36,18 +36,7 @@ invariant sETHAddressZeroHasNoBalance(bytes32 key)
     filtered { f -> notHarnessCall(f) }
 
 /**
-* Check the amount of all claimable ETH is more that amount already claimed
-*/
-invariant sETHTotalClaimable()
-    ghostSETHUserClaimableSum() >= totalClaimed()
-    filtered { f -> notHarnessCall(f) }
-    { preserved {
-        requireInvariant knotsSyndicatedCount();
-        requireInvariant numberOfRegisteredKnotsInvariant();
-    } }
-
-/**
- * Sum of two balances is allways less than Total :
+ * Check Sum of two balances is allways less than Total :
  * Given one user, for any other random user making whatever calls,
  * their combined sETH balances stays less than Total
  */
@@ -60,3 +49,48 @@ invariant sETHSolvencyCorrollary(address user, address random, bytes32 knot)
             require e.msg.sender == random;
         }
     }
+
+/**
+* Check the amount of all claimable ETH is more that total amount already claimed
+*/
+invariant sETHTotalClaimable()
+    ghostSETHUserClaimableSum() >= totalClaimed()
+    filtered { f -> notHarnessCall(f) }
+    { preserved {
+        requireInvariant knotsSyndicatedCount();
+        requireInvariant numberOfRegisteredKnotsInvariant();
+    } }
+
+/**
+* Check that total amount of ETH staked is equal to the total of all free floating shares
+* while rejected functions are not called
+*/
+// @audit : check added selectors... maybe need one call to updateAccruedETHPerShares() for rejected functions
+invariant sETHSTloatingShareTotalEqualSum()
+    ghostSETHTotalStaked() == totalFreeFloatingShares()
+    filtered {
+        f -> notHarnessCall(f)
+        && f.selector != unstake(address,address,bytes32[],uint256[]).selector
+        && f.selector != deRegisterKnots(bytes32[]).selector
+        && f.selector != updateCollateralizedSlotOwnersAccruedETH(bytes32).selector
+        && f.selector != claimAsCollateralizedSLOTOwner(address,bytes32[]).selector
+        && f.selector != batchUpdateCollateralizedSlotOwnersAccruedETH(bytes32[]).selector
+    }
+    { preserved {
+            requireInvariant knotsSyndicatedCount();
+            requireInvariant numberOfRegisteredKnotsInvariant();
+    }}
+
+/**
+* Check that total amount of ETH staked is more than the total of all free floating shares
+*/
+// @audit : check added selector not a bug...
+invariant sETHSTloatingShareTotalLessThanSum()
+    ghostSETHTotalStaked() >= totalFreeFloatingShares()
+    filtered { f -> notHarnessCall(f)
+            && f.selector != unstake(address,address,bytes32[],uint256[]).selector
+    }
+    { preserved {
+            requireInvariant knotsSyndicatedCount();
+            requireInvariant numberOfRegisteredKnotsInvariant();
+    }}

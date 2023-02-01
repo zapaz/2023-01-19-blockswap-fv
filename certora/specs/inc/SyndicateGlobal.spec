@@ -5,7 +5,7 @@ using MocksETH as sETHToken
 methods {
     //// Added methods
     ethBalance                                                      ()                                      returns (uint256)   envfree
-    
+
     sETHBalanceOf                                                   (bytes32, address)                      returns (uint256)   envfree
     sETHTotalSupply                                                 (bytes32)                               returns (uint256)   envfree
 
@@ -25,6 +25,9 @@ methods {
     isNoLongerPartOfSyndicate                                       (bytes32)                               returns (bool)      envfree
 
     initialize                                                      (address,uint256,address[],bytes32[])
+
+    updateAccruedETHPerShares                                       ()                                                         envfree
+    lastAccumulatedETHPerFreeFloatingShare                          (bytes32)                                                  envfree
 
     //// Regular methods
     totalETHReceived                                                ()                                      returns (uint256)   envfree
