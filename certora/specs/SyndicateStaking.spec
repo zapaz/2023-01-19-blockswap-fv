@@ -43,7 +43,10 @@ rule stakingUnstake() {
     assert sethToBalAfter     == sethToBalBefore    + amount;
 }
 
-rule stakingClaim() {
+/**
+* Check claimAsStaker is conform to calculation, and that stake is unchanged
+*/
+rule stakingClaimAsStaker() {
     env e; bytes32 k; address addr;
 
     requireInvariant knotsSyndicatedCount();
@@ -53,18 +56,19 @@ rule stakingClaim() {
     // Require this knot syndicated
     require isKnotRegistered(k) && !isNoLongerPartOfSyndicate(k);
 
-    mathint claimBefore = sETHUserClaimForKnot(k, e.msg.sender);
-    mathint stakedBefore = sETHStakedBalanceForKnot(k, e.msg.sender);
-    mathint calcBefore =  (accumulatedETHPerFreeFloatingShare() * stakedBefore) / 10^24;
-    require calcBefore == claimBefore;
+    uint256 claimBefore  = sETHUserClaimForKnot(k, e.msg.sender);
+    uint256 stakedBefore = sETHStakedBalanceForKnot(k, e.msg.sender);
+    uint256 calcBefore   =  (accumulatedETHPerFreeFloatingShare() * stakedBefore) / 10^24;
+    require calcBefore  == claimBefore;
 
     claimAsStaker(e,addr,k);
 
-    mathint claimAfter = sETHUserClaimForKnot(k, e.msg.sender);
-    mathint stakedAfter = sETHStakedBalanceForKnot(k, e.msg.sender);
-    mathint calcAfter =  (accumulatedETHPerFreeFloatingShare() * stakedAfter) / 10^24;
+    uint256 claimAfter   = sETHUserClaimForKnot(k, e.msg.sender);
+    uint256 stakedAfter  = sETHStakedBalanceForKnot(k, e.msg.sender);
+    uint256 calcAfter    =  (accumulatedETHPerFreeFloatingShare() * stakedAfter) / 10^24;
 
-    assert stakedAfter == stakedBefore, "Stake should not change";
+    assert stakedAfter  == stakedBefore, "Stake should not change";
     assert stakedBefore  < 10^9 => claimAfter == claimBefore, "Should have not claimed! not enough amount";
-    assert stakedBefore >= 10^9 => claimAfter == calcAfter, "Should not have rounding error";
+    assert stakedBefore >= 10^9 => claimAfter >= claimBefore && calcAfter == claimAfter ,
+        "Unexpected claim amount , rounding error too big ?";
 }

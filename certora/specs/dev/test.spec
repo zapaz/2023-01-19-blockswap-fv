@@ -1,21 +1,16 @@
 import "../Syndicate.spec"
 
-use invariant knotsSyndicatedCount
-use invariant numberOfRegisteredKnotsInvariant
-use invariant lastAccumulatedIsNoLongerSyndicated
+rule sETHUserClaimForKnotDecrease(){
+    env e; bytes32 k; address addr;
+    uint256 amount; address ethTo; address unstaker;
 
-// sETHUserClaimForKnot not allways increase ?!
-rule alwaysIncrease(method f) filtered {
-    f -> notHarnessCall(f)
-}{
-    env e; calldataarg args;
-    bytes32 k; address addr;
+    updateAccruedETHPerShares();
 
-    mathint amountBefore = sETHUserClaimForKnot(k,addr);
+    uint256 claimBefore = sETHUserClaimForKnot(k,addr);
 
-    f(e, args);
+    unstake(e, ethTo, unstaker, k, amount);
 
-    mathint amountAfter  = sETHUserClaimForKnot(k,addr);
+    uint256 claimAfter  = sETHUserClaimForKnot(k,addr);
 
-    assert amountAfter  >= amountBefore;
+    assert amount > 0 => claimAfter < claimBefore;
 }

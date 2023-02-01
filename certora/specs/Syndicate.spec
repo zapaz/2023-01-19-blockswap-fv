@@ -14,7 +14,7 @@ use rule     increasesAll
 
 use rule     stakingStake
 use rule     stakingUnstake
-use rule     stakingClaim
+use rule     stakingClaimAsStaker
 
 use invariant lastAccumulatedIsNoLongerSyndicated
 

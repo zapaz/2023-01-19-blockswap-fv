@@ -84,7 +84,6 @@ invariant sETHSTloatingShareTotalEqualSum()
 /**
 * Check that total amount of ETH staked is more than the total of all free floating shares
 */
-// @audit : check added selector not a bug...
 invariant sETHSTloatingShareTotalLessThanSum()
     ghostSETHTotalStaked() >= totalFreeFloatingShares()
     filtered { f -> notHarnessCall(f)
@@ -94,3 +93,25 @@ invariant sETHSTloatingShareTotalLessThanSum()
             requireInvariant knotsSyndicatedCount();
             requireInvariant numberOfRegisteredKnotsInvariant();
     }}
+
+/**
+* Check that sETHUserClaimForKnot almost allways increases
+*/
+rule sETHUserClaimForKnotIncrease(method f) filtered {
+    f -> notHarnessCall(f)
+    && f.selector != unstake(address,address,bytes32[],uint256[]).selector
+}{
+    env e; calldataarg args;
+    bytes32 k; address addr;
+
+    requireInvariant numberOfRegisteredKnotsInvariant();
+    requireInvariant lastAccumulatedIsNoLongerSyndicated(k);
+
+    uint256 claimBefore = sETHUserClaimForKnot(k,addr);
+
+    f(e, args);
+
+    uint256 claimAfter  = sETHUserClaimForKnot(k,addr);
+
+    assert claimAfter  >= claimBefore;
+}
