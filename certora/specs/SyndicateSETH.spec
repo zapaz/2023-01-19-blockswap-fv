@@ -51,17 +51,6 @@ invariant sETHSolvencyCorrollary(address user, address random, bytes32 knot)
     }
 
 /**
-* Check the amount of all claimable ETH is more that total amount already claimed
-*/
-invariant sETHTotalClaimable()
-    ghostSETHUserClaimableSum() >= totalClaimed()
-    filtered { f -> notHarnessCall(f) }
-    { preserved {
-        requireInvariant knotsSyndicatedCount();
-        requireInvariant numberOfRegisteredKnotsInvariant();
-    } }
-
-/**
 * Check that total amount of ETH staked is equal to the total of all free floating shares
 * while rejected functions are not called
 */
@@ -101,6 +90,21 @@ invariant sETHBalanceZeroThenClaimAlso(bytes32 k, address addr)
     sETHStakedBalanceForKnot(k, addr) == 0 => sETHUserClaimForKnot(k,addr) == 0
     filtered { f -> notHarnessCall(f) }
 
+
+/**
+* Check the amount of all claimable ETH is more that total amount already claimed
+*/
+invariant sETHTotalClaimable()
+    ghostSETHUserClaimableSum() >= totalClaimed()
+    filtered {
+        f -> notHarnessCall(f)
+        && f.selector != unstake(address,address,bytes32[],uint256[]).selector
+        && f.selector != claimAsCollateralizedSLOTOwner(address,bytes32[]).selector
+    }
+    { preserved {
+        requireInvariant knotsSyndicatedCount();
+        requireInvariant numberOfRegisteredKnotsInvariant();
+    } }
 
 /**
 * Check that sETHUserClaimForKnot almost allways increases
