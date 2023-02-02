@@ -17,7 +17,6 @@ invariant ethSolvency()
         requireInvariant numberOfRegisteredKnotsInvariant();
     }}
 
-
 /**
 * Check calculation function on amount of ETH eligible for free floating or collateralized holders
 *
