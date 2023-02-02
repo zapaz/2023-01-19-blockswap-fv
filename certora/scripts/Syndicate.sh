@@ -1,10 +1,10 @@
-certoraRun  certora/harnesses/SyndicateHarness.sol               \
+certoraRun  certora/harnesses/SyndicateHarnessPlus.sol            \
     certora/harnesses/MockStakeHouseUniverse.sol                  \
     certora/harnesses/MockStakeHouseRegistry.sol                  \
     certora/harnesses/MockSlotSettlementRegistry.sol              \
     certora/harnesses/MocksETH.sol                                \
     certora/harnesses/MocksETH3.sol                               \
-    --verify SyndicateHarness:certora/specs/Syndicate.spec       \
+    --verify SyndicateHarnessPlus:certora/specs/Syndicate.spec    \
     --cloud master                                                \
     --optimistic_loop                                             \
     --optimize 1                                                  \
@@ -15,5 +15,3 @@ certoraRun  certora/harnesses/SyndicateHarness.sol               \
     @blockswaplab=node_modules/@blockswaplab                      \
     @openzeppelin=node_modules/@openzeppelin                      \
     --msg "Syndicate $1"                                          \
-    # --rules $1
-    # --typecheck_only                                              \

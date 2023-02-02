@@ -28,3 +28,11 @@ rule bug5Rule() {
     assert getUnprocessedETHForAllCollateralizedSlot() ==
         ( ( totalETHReceived() / 2 ) - lastSeenETHPerCollateralizedSlotPerKnot()) / knots ;
 }
+
+/**
+ * Same invariant than sETHAddressZeroHasNoBalance
+ * Address 0 must have zero balance for any StakeHouse sETH
+ */
+invariant bug9Invariant(bytes32 k, address addr)
+    sETHStakedBalanceForKnot(k, addr) == 0 => sETHUserClaimForKnot(k,addr) == 0
+    filtered { f -> notHarnessCall(f) }

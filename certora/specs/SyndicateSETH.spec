@@ -95,6 +95,14 @@ invariant sETHSTloatingShareTotalLessThanSum()
     }}
 
 /**
+* Check that for any Knot and User, Zero Staked amount implies Zero Claim amount
+*/
+invariant sETHBalanceZeroThenClaimAlso(bytes32 k, address addr)
+    sETHStakedBalanceForKnot(k, addr) == 0 => sETHUserClaimForKnot(k,addr) == 0
+    filtered { f -> notHarnessCall(f) }
+
+
+/**
 * Check that sETHUserClaimForKnot almost allways increases
 */
 rule sETHUserClaimForKnotIncrease(method f) filtered {

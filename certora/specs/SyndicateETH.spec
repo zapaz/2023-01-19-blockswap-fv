@@ -9,10 +9,10 @@ rule ethDecreaseWhenClaimedIncrease(method f) filtered {
 }{
     env e; calldataarg args;
 
-    mathint balBefore       = ethBalance();
+    mathint balBefore       = ethBalanceOf(currentContract);
     mathint claimedBefore   = totalClaimed();
     f(e, args);
-    mathint balAfter        = ethBalance();
+    mathint balAfter        = ethBalanceOf(currentContract);
     mathint claimedAfter    = totalClaimed();
 
     assert claimedAfter > claimedBefore =>

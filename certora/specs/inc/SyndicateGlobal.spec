@@ -4,7 +4,7 @@ using MocksETH as sETHToken
 
 methods {
     //// Added methods
-    ethBalance                                                      ()                                      returns (uint256)   envfree
+    ethBalanceOf                                                    (address)                               returns (uint256)   envfree
 
     sETHBalanceOf                                                   (bytes32, address)                      returns (uint256)   envfree
     sETHTotalSupply                                                 (bytes32)                               returns (uint256)   envfree
