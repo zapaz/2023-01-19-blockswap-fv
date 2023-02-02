@@ -1,9 +1,5 @@
 import "../Syndicate.spec"
 
-methods {
-    lastSeenETHPerCollateralizedSlotPerKnot()   returns (uint256)   envfree
-}
-
 /**
 * accumulatedETHPerCollateralizedSlotPerKnot is n times than lastSeenETHPerCollateralizedSlotPerKnot
 */

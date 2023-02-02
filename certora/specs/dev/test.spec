@@ -1,26 +1,38 @@
 import "../Syndicate.spec"
 
+use invariant knotsSyndicatedCount
+use invariant numberOfRegisteredKnotsInvariant
 
 /**
-* Check that after staking, sETH amount is transfered from user to contract
+* Check the amount of all claimable ETH is more that total amount already claimed
 */
-rule stakingStake() {
-    env e; bytes32 key; uint256 amount; address behalf;
+invariant sETHTotalClaimable()
+    ghostSETHUserClaimableSum() >= totalClaimed()
+    filtered {
+        f -> notHarnessCall(f)
+        && f.selector != unstake(address,address,bytes32[],uint256[]).selector
+        && f.selector != claimAsCollateralizedSLOTOwner(address,bytes32[]).selector
+    }
+    { preserved {
+        requireInvariant knotsSyndicatedCount();
+        requireInvariant numberOfRegisteredKnotsInvariant();
+    } }
 
-    address staker  = e.msg.sender;
-    require  staker != currentContract;
-
-    mathint totalBefore        = totalFreeFloatingShares();
-    mathint stakerBalBefore    = sETHBalanceOf(key, staker);
-    mathint syndicateBalBefore = sETHBalanceOf(key, currentContract);
-
-    stake(e, key, amount, behalf);
-
-    mathint totalAfter         = totalFreeFloatingShares();
-    mathint stakerBalAfter     = sETHBalanceOf(key, staker);
-    mathint syndicateBalAfter  = sETHBalanceOf(key, currentContract);
-
-    assert stakerBalAfter    == stakerBalBefore    - amount;
-    assert syndicateBalAfter == syndicateBalBefore + amount;
-    assert totalAfter        == totalBefore + amount;
-}
+/**
+* Check ETH solvency, that still claimable ETH is available in contract
+*
+* totalETHReceived     is the amount of ETH in contract and already claimed
+* sETHUserClaimableSum is the amount of all claimable ETH (already claimed or still claimable)
+*/
+invariant ethSolvency()
+    totalETHReceived() >= ghostSETHUserClaimableSum()
+    filtered {
+        f -> notHarnessCall(f)
+        && f.selector != unstake(address,address,bytes32[],uint256[]).selector
+        && f.selector != stake(bytes32[],uint256[],address).selector
+        && f.selector != claimAsStaker(address,bytes32[]).selector
+    }
+    { preserved {
+        requireInvariant knotsSyndicatedCount();
+        requireInvariant numberOfRegisteredKnotsInvariant();
+    }}

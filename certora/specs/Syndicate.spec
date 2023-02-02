@@ -1,30 +1,36 @@
 import "inc/SyndicateGlobal.spec"
 import "SyndicateBugs159.spec"
-import "SyndicateIncreases.spec"
-import "SyndicateStaking.spec"
-import "SyndicateFloating.spec"
-import "SyndicateKnots.spec"
 import "SyndicateETH.spec"
+import "SyndicateFloating.spec"
+import "SyndicateIncreases.spec"
+import "SyndicateKnots.spec"
 import "SyndicateSETH.spec"
+import "SyndicateStaking.spec"
 
 use rule     bug1Rule
 use rule     bug5Rule
+use rule     bug9Rule
 
-use rule     increasesAll
-
-use rule     stakingStake
-use rule     stakingUnstake
-use rule     stakingClaimAsStaker
+use invariant ethSolvency
+use rule      ethDecreaseWhenClaimedIncrease
 
 use invariant lastAccumulatedIsNoLongerSyndicated
 
-use invariant knotsSyndicatedCount
-use invariant numberOfRegisteredKnotsInvariant
-use rule     knotsCanNotDeregisterUnregistered
+use rule      increasesAll
 
-use rule     ethDecreaseWhenClaimedIncrease
+use invariant numberOfRegisteredKnotsInvariant
+use invariant knotsSyndicatedCount
+use rule     knotsCanNotDeregisterUnregistered
 
 use invariant sETHTotalStakeForKnotInvariant
 use invariant sETHAddressZeroHasNoBalance
 use invariant sETHSolvencyCorrollary
-// use invariant sETHTotalClaimable
+use invariant sETHSTloatingShareTotalEqualSum
+use invariant sETHSTloatingShareTotalLessThanSum
+use invariant sETHBalanceZeroThenClaimAlso
+use invariant sETHTotalClaimable
+use rule     sETHUserClaimForKnotIncrease
+
+use rule     stakingStake
+use rule     stakingUnstake
+use rule     stakingClaimAsStaker

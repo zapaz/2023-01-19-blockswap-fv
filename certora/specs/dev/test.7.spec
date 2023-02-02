@@ -1,9 +1,5 @@
 import "../Syndicate.spec"
 
-methods {
-    isActive(bytes32)     returns (bool)  envfree
-}
-
 invariant noEthWhenNotValid(bytes32 b)
     !isActive(b) => totalETHProcessedPerCollateralizedKnot(b) == 0
     filtered { f -> notHarnessCall(f) }

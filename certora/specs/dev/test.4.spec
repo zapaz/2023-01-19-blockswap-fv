@@ -1,9 +1,5 @@
 import "../Syndicate.spec"
-
-methods {
-    sETHTotalSupply (bytes32)           returns (uint256)   envfree
-}
-
+ 
 /**
  * TotalStake of any StakeHouse sETH is 12 ether max
  */
