@@ -8,12 +8,12 @@ fi
 # solc-select use 0.8.13
 set -x
 
-certoraRun  certora/harnesses/SyndicateHarness.sol                \
+certoraRun  certora/harnesses/SyndicateHarnessPlus.sol            \
     certora/harnesses/MockStakeHouseUniverse.sol                  \
     certora/harnesses/MockStakeHouseRegistry.sol                  \
     certora/harnesses/MockSlotSettlementRegistry.sol              \
     certora/harnesses/MocksETH.sol                                \
-    --verify SyndicateHarness:certora/specs/dev/test.spec         \
+    --verify SyndicateHarnessPlus:certora/specs/dev/test.spec     \
     --cloud master                                                \
     --optimistic_loop                                             \
     --optimize 1                                                  \

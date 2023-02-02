@@ -29,10 +29,24 @@ rule bug5Rule() {
         ( ( totalETHReceived() / 2 ) - lastSeenETHPerCollateralizedSlotPerKnot()) / knots ;
 }
 
+
 /**
- * Same invariant than sETHAddressZeroHasNoBalance
- * Address 0 must have zero balance for any StakeHouse sETH
+ * User Stake balance to Zero implies User Claim to Zero
  */
-invariant bug9Invariant(bytes32 k, address addr)
-    sETHStakedBalanceForKnot(k, addr) == 0 => sETHUserClaimForKnot(k,addr) == 0
-    filtered { f -> notHarnessCall(f) }
+rule bug9Rule(){
+    env e; bytes32 k; uint256 amount; address ethTo;
+
+    mathint stakedBefore = sETHStakedBalanceForKnot(k, e.msg.sender);
+    mathint claimBefore  = sETHUserClaimForKnot(k,e.msg.sender);
+
+    require stakedBefore != 0;
+    require claimBefore != 0;
+    require amount > 10^12;
+
+    unstake(e, e.msg.sender, ethTo, k, amount);
+
+    mathint stakedAfter  = sETHStakedBalanceForKnot(k, e.msg.sender);
+    mathint claimAfter   = sETHUserClaimForKnot(k,e.msg.sender);
+
+    assert stakedAfter == 0 => claimAfter == 0,  "KO";
+}
