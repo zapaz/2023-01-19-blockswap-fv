@@ -10,16 +10,19 @@ rule stakingStake() {
     address staker  = e.msg.sender;
     require  staker != currentContract;
 
+    mathint totalBefore        = totalFreeFloatingShares();
     mathint stakerBalBefore    = sETHBalanceOf(key, staker);
     mathint syndicateBalBefore = sETHBalanceOf(key, currentContract);
 
     stake(e, key, amount, behalf);
 
+    mathint totalAfter         = totalFreeFloatingShares();
     mathint stakerBalAfter     = sETHBalanceOf(key, staker);
     mathint syndicateBalAfter  = sETHBalanceOf(key, currentContract);
 
     assert stakerBalAfter    == stakerBalBefore    - amount;
     assert syndicateBalAfter == syndicateBalBefore + amount;
+    assert totalAfter        == totalBefore + amount;
 }
 
 /**
@@ -69,6 +72,6 @@ rule stakingClaimAsStaker() {
 
     assert stakedAfter  == stakedBefore, "Stake should not change";
     assert stakedBefore  < 10^9 => claimAfter == claimBefore, "Should have not claimed! not enough amount";
-    assert stakedBefore >= 10^9 => claimAfter >= claimBefore && calcAfter == claimAfter ,
+    assert stakedBefore >= 10^9 => claimAfter >= claimBefore && claimAfter == calcAfter ,
         "Unexpected claim amount , rounding error too big ?";
 }
