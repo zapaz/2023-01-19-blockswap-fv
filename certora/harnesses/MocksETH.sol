@@ -1,6 +1,5 @@
-pragma solidity 0.8.13;
-
 // SPDX-License-Identifier: MIT
+pragma solidity 0.8.13;
 
 import { ERC20PermitUpgradeable } from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/draft-ERC20PermitUpgradeable.sol";
 import { ISlotSettlementRegistry } from "../munged/interfaces/ISlotSettlementRegistry.sol";
